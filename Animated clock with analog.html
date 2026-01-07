@@ -1,0 +1,613 @@
+7<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Animated Clock Wallpaper</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Barlow+Condensed:wght@300;600&family=Montserrat:wght@300;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: radial-gradient(circle, #0f2027, #203a43, #2c5364);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: var(--opacity); transform: scale(1); }
+        }
+        
+        .clock-container {
+            position: relative;
+            width: 85vmin;
+            height: 85vmin;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+        
+        .analog-clock {
+            width: 70vmin;
+            height: 70vmin;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.15);
+            border: 2vmin solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                inset 0 0 15vmin rgba(0, 0, 0, 0.5),
+                0 0 5vmin rgba(0, 0, 0, 0.3),
+                0 0 0 1vmin rgba(255, 255, 255, 0.05);
+            position: relative;
+            transform-style: preserve-3d;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+            50% { transform: translateY(-3vmin) rotateX(5deg) rotateY(5deg); }
+        }
+        
+        .clock-face {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hour-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hour-marker {
+            position: absolute;
+            width: 3vmin;
+            height: 3vmin;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 600;
+            font-size: 2.5vmin;
+            transform-origin: center;
+        }
+        
+        .hour-hand, .minute-hand, .second-hand {
+            position: absolute;
+            transform-origin: bottom center;
+            border-radius: 1vmin;
+            box-shadow: 0 0 0.5vmin rgba(0, 0, 0, 0.5);
+        }
+        
+        .hour-hand {
+            width: 1vmin;
+            height: 15vmin;
+            background: linear-gradient(to top, #ff8a00, #e52e71);
+            bottom: 50%;
+            left: calc(50% - 0.5vmin);
+            animation: bounce 4s infinite ease-in-out;
+        }
+        
+        .minute-hand {
+            width: 0.8vmin;
+            height: 22vmin;
+            background: linear-gradient(to top, #00f2fe, #4facfe);
+            bottom: 50%;
+            left: calc(50% - 0.4vmin);
+            animation: bounce 2s infinite ease-in-out;
+        }
+        
+        .second-hand {
+            width: 0.4vmin;
+            height: 25vmin;
+            background: linear-gradient(to top, #a1ffce, #faffd1);
+            bottom: 50%;
+            left: calc(50% - 0.2vmin);
+        }
+        
+        .center-dot {
+            width: 3vmin;
+            height: 3vmin;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: calc(50% - 1.5vmin);
+            left: calc(50% - 1.5vmin);
+            box-shadow: 0 0 1vmin rgba(255, 255, 255, 0.5);
+        }
+        
+        .digital-clock {
+            position: absolute;
+            width: 30vmin;
+            height: 10vmin;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 2vmin;
+            top: 65%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4vmin;
+            letter-spacing: 0.5vmin;
+            color: white;
+            box-shadow: 0 0 1vmin rgba(0, 0, 0, 0.5);
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 1vmin rgba(0, 0, 0, 0.5); }
+            100% { box-shadow: 0 0 2vmin rgba(255, 255, 255, 0.3); }
+        }
+        
+        .date-display {
+            position: absolute;
+            bottom: 10%;
+            width: 70%;
+            text-align: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 3vmin;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 1vmin;
+        }
+        
+        .full-date {
+            font-size: 3.5vmin;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1vmin 2vmin;
+            border-radius: 1vmin;
+        }
+        
+        .day-info {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .day-item {
+            padding: 1vmin 2vmin;
+            border-radius: 1vmin;
+            background: rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .day-item.highlight {
+            background: rgba(255, 188, 0, 0.2);
+            color: #ffbc00;
+            transform: scale(1.1);
+        }
+        
+        .holiday-display {
+            position: absolute;
+            top: 10%;
+            width: 80%;
+            text-align: center;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 3vmin;
+            color: #ffbc00;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1vmin;
+            border-radius: 1vmin;
+            opacity: 0;
+            transform: translateY(-2vmin);
+            transition: all 0.5s ease;
+        }
+        
+        .holiday-display.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            animation: float-particle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+        
+        @keyframes float-particle {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            50% { opacity: var(--opacity); transform: translate(var(--tx), var(--ty)) scale(1); }
+            100% { transform: translate(0, 0) scale(0); opacity: 0; }
+        }
+        
+        .glow-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(100,200,255,0.1) 0%, transparent 70%);
+            animation: glow-pulse 8s infinite alternate;
+            z-index: -2;
+        }
+        
+        @keyframes glow-pulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.8; }
+        }
+        
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            font-size: 2vmin;
+            opacity: 0.3;
+            animation: float-icon var(--duration) infinite linear;
+        }
+        
+        @keyframes float-icon {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            25% { opacity: var(--opacity); }
+            100% { transform: translateY(-100vmin) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-effect"></div>
+    <div class="particles" id="particles"></div>
+    <div class="floating-icons" id="floating-icons"></div>
+    
+    <div class="clock-container">
+        <div class="holiday-display" id="holiday-display"></div>
+        <div class="analog-clock">
+            <div class="clock-face">
+                <div class="hour-markers" id="hour-markers"></div>
+                <div class="hour-hand" id="hour-hand"></div>
+                <div class="minute-hand" id="minute-hand"></div>
+                <div class="second-hand" id="second-hand"></div>
+                <div class="center-dot"></div>
+            </div>
+        </div>
+        <div class="digital-clock" id="digital-clock"></div>
+        
+        <div class="date-display">
+            <div class="full-date" id="full-date"></div>
+            <div class="day-info" id="day-info"></div>
+        </div>
+    </div>
+
+    <script>
+        // Create stars and particles
+        function createStars() {
+            const particlesContainer = document.getElementById('particles');
+            const floatingIcons = document.getElementById('floating-icons');
+            
+            // Create stars
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3 + 1;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const duration = Math.random() * 5 + 3;
+                const delay = Math.random() * 5;
+                const opacity = Math.random() * 0.8 + 0.2;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                star.style.setProperty('--duration', `${duration}s`);
+                star.style.setProperty('--opacity', opacity);
+                star.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(star);
+            }
+            
+            // Create floating particles
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 4 + 2;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const duration = Math.random() * 15 + 10;
+                const delay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.1;
+                const tx = (Math.random() - 0.5) * 50;
+                const ty = (Math.random() - 0.5) * 50;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+                particle.style.setProperty('--duration', `${duration}s`);
+                particle.style.setProperty('--opacity', opacity);
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+            
+            // Create floating icons
+            const icons = ['★', '✿', '✧', '✦', '❋', '✺', '✹', '✽'];
+            for (let i = 0; i < 20; i++) {
+                const icon = document.createElement('div');
+                icon.classList.add('floating-icon');
+                
+                const left = Math.random() * 100;
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 15;
+                const opacity = Math.random() * 0.3 + 0.1;
+                const iconChar = icons[Math.floor(Math.random() * icons.length)];
+                
+                icon.textContent = iconChar;
+                icon.style.left = `${left}%`;
+                icon.style.bottom = `-5vmin`;
+                icon.style.color = `hsl(${Math.random() * 60 + 180}, 80%, 70%)`;
+                icon.style.setProperty('--duration', `${duration}s`);
+                icon.style.setProperty('--opacity', opacity);
+                icon.style.animationDelay = `${delay}s`;
+                icon.style.fontSize = `${Math.random() * 3 + 2}vmin`;
+                
+                floatingIcons.appendChild(icon);
+            }
+        }
+        
+        // Initialize hour markers
+        function setupHourMarkers() {
+            const hourMarkers = document.getElementById('hour-markers');
+            
+            for (let i = 1; i <= 12; i++) {
+                const marker = document.createElement('div');
+                marker.classList.add('hour-marker');
+                
+                const angle = (i * 30) - 90;
+                marker.style.transform = `rotate(${angle}deg) translate(30vmin) rotate(-${angle}deg)`;
+                marker.textContent = i;
+                
+                hourMarkers.appendChild(marker);
+            }
+        }
+        
+        // Update clock hands
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const milliseconds = now.getMilliseconds();
+            
+            // Calculate angles with smooth movement for seconds
+            const hourAngle = (hours * 30) + (minutes * 0.5);
+            const minuteAngle = minutes * 6;
+            const secondAngle = seconds * 6 + (milliseconds * 0.006);
+            
+            document.getElementById('hour-hand').style.transform = `rotate(${hourAngle}deg)`;
+            document.getElementById('minute-hand').style.transform = `rotate(${minuteAngle}deg)`;
+            document.getElementById('second-hand').style.transform = `rotate(${secondAngle}deg)`;
+            
+            // Update digital clock
+            const formattedHours = String(hours === 0 ? 12 : hours).padStart(2, '0');
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(seconds).padStart(2, '0');
+            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+            
+            document.getElementById('digital-clock').textContent = 
+                `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+            
+            // Update date display
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            const dayName = days[now.getDay()];
+            const monthName = months[now.getMonth()];
+            const date = now.getDate();
+            const year = now.getFullYear();
+            
+            document.getElementById('full-date').textContent = 
+                `${dayName}, ${monthName} ${date}, ${year}`;
+            
+            // Update day info (week number, day of year)
+            const start = new Date(now.getFullYear(), 0, 0);
+            const diff = now - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const dayOfYear = Math.floor(diff / oneDay);
+            const weekNumber = Math.ceil(dayOfYear / 7);
+            
+            const dayInfoContainer = document.getElementById('day-info');
+            dayInfoContainer.innerHTML = '';
+            
+            const dayItems = [
+                { label: 'Day', value: date },
+                { label: 'Week', value: weekNumber },
+                { label: 'Day of Year', value: dayOfYear },
+                { label: 'Days Left', value: 365 - dayOfYear - (new Date(year, 11, 31).getDay() < now.getDay() ? 0 : 1) }
+            ];
+            
+            dayItems.forEach(item => {
+                const dayItem = document.createElement('div');
+                dayItem.classList.add('day-item');
+                dayItem.innerHTML = `<div>${item.label}</div><div>${item.value}</div>`;
+                
+                // Highlight current day
+                if (item.label === 'Day') {
+                    dayItem.classList.add('highlight');
+                }
+                
+                dayInfoContainer.appendChild(dayItem);
+            });
+            
+            // Check for holidays and special days
+            checkHolidays(now);
+            
+            // Animate second hand with bounce effect
+            document.getElementById('second-hand').style.transition = 
+                milliseconds < 100 ? 'none' : 'transform 0.5s cubic-bezier(0.4, 2.3, 0.6, 0.7)';
+        }
+        
+        // Check for holidays and special days
+        function checkHolidays(date) {
+            const holidayDisplay = document.getElementById('holiday-display');
+            holidayDisplay.classList.remove('active');
+            
+            const month = date.getMonth() + 1; // 1-12
+            const day = date.getDate();
+            const dayOfWeek = date.getDay(); // 0-6 (Sun-Sat)
+            const year = date.getFullYear();
+            
+            let holiday = '';
+            
+            // Major holidays
+            if (month === 1 && day === 1) holiday = 'Happy New Year!';
+            if (month === 2 && day === 14) holiday = 'Valentine\'s Day ❤';
+            if (month === 12 && day === 25) holiday = 'Merry Christmas!';
+            if (month === 10 && day === 31) holiday = 'Happy Halloween! 🎃';
+            if (month === 7 && day === 4 && year >= 1776) holiday = 'Independence Day! 🇺🇸';
+            
+            // First Monday in September (Labor Day)
+            if (month === 9 && dayOfWeek === 1 && day <= 7) holiday = 'Labor Day';
+            
+            // October 12 (Columbus Day)
+            if (month === 10 && day === 12) holiday = 'Columbus Day';
+            
+            // Last Thursday in November (Thanksgiving)
+            if (month === 11 && dayOfWeek === 4 && day > 21 && day < 29) holiday = 'Happy Thanksgiving!';
+            
+            // Custom special days
+            const now = new Date(date);
+            now.setHours(0, 0, 0, 0);
+            const springEquinox = new Date(year, 2, 20); // March 20
+            const summerSolstice = new Date(year, 5, 20); // June 20
+            const fallEquinox = new Date(year, 8, 22); // September 22
+            const winterSolstice = new Date(year, 11, 21); // December 21
+            
+            if (now.getTime() === springEquinox.getTime()) holiday = 'Spring Equinox 🌸';
+            if (now.getTime() === summerSolstice.getTime()) holiday = 'Summer Solstice ☀️';
+            if (now.getTime() === fallEquinox.getTime()) holiday = 'Autumn Equinox 🍂';
+            if (now.getTime() === winterSolstice.getTime()) holiday = 'Winter Solstice ❄';
+            
+            // Easter calculation (simplified approximation)
+            const a = year % 19;
+            const b = Math.floor(year / 100);
+            const c = year % 100;
+            const d = Math.floor(b / 4);
+            const e = b % 4;
+            const f = Math.floor((b + 8) / 25);
+            const g = Math.floor((b - f + 1) / 3);
+            const h = (19 * a + b - d - g + 15) % 30;
+            const i = Math.floor(c / 4);
+            const k = c % 4;
+            const l = (32 + 2 * e + 2 * i - h - k) % 7;
+            const m = Math.floor((a + 11 * h + 22 * l) / 451);
+            const monthEaster = Math.floor((h + l - 7 * m + 114) / 31);
+            const dayEaster = ((h + l - 7 * m + 114) % 31) + 1;
+            
+            if (month === monthEaster && day === dayEaster) holiday = 'Happy Easter! 🐣';
+            
+            if (holiday) {
+                holidayDisplay.textContent = holiday;
+                holidayDisplay.classList.add('active');
+                
+                // Add floating celebratory icons
+                if (['Valentine', 'Christmas', 'New Year', 'Easter'].some(text => holiday.includes(text))) {
+                    createCelebrationEffects(holiday);
+                }
+            }
+        }
+        
+        function createCelebrationEffects(holiday) {
+            const container = document.getElementById('floating-icons');
+            
+            // Clear previous celebration effects
+            document.querySelectorAll('.celebration').forEach(el => el.remove());
+            
+            if (holiday.includes('Christmas')) {
+                // Add snowflake-like effects
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        const snowflake = document.createElement('div');
+                        snowflake.classList.add('floating-icon', 'celebration');
+                        snowflake.style.left = `${Math.random() * 100}%`;
+                        snowflake.style.bottom = '-2vmin';
+                        snowflake.style.fontSize = '2vmin';
+                        snowflake.textContent = '❄';
+                        snowflake.style.color = 'white';
+                        snowflake.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                        snowflake.style.animationDelay = '0s';
+                        container.appendChild(snowflake);
+                    }, i * 200);
+                }
+            } else if (holiday.includes('Easter')) {
+                // Add egg-like effects
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        const egg = document.createElement('div');
+                        egg.classList.add('floating-icon', 'celebration');
+                        egg.style.left = `${Math.random() * 100}%`;
+                        egg.style.bottom = '-2vmin';
+                        egg.style.fontSize = '2vmin';
+                        egg.textContent = '🥚';
+                        egg.style.animationDuration = `${Math.random() * 8 + 3}s`;
+                        egg.style.animationDelay = '0s';
+                        container.appendChild(egg);
+                    }, i * 300);
+                }
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            setupHourMarkers();
+            updateClock();
+            
+            // Update clock every 50ms for smooth seconds hand movement
+            setInterval(updateClock, 50);
+            
+            // Change background gradient periodically
+            setInterval(() => {
+                const hue1 = Math.floor(Math.random() * 60 + 180);
+                const hue2 = Math.floor(Math.random() * 60 + 200);
+                document.body.style.background = 
+                    `radial-gradient(circle, hsl(${hue1}, 70%, 10%), hsl(${hue2}, 70%, 15%), hsl(${hue1}, 70%, 20%))`;
+            }, 30000);
+        });
+    </script>
+</body>
+</html>
